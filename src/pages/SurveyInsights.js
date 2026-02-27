@@ -52,12 +52,21 @@ export default function SurveyInsights() {
     }
   };
 
-  const surveyUrl = `${window.location.origin}/survey/${id}/take`;
+  const webUrl      = `${window.location.origin}/survey/${id}/take`;
+  const whatsappUrl = `${window.location.origin}/survey/${id}/whatsapp`;
+  const surveyUrl   = webUrl; // keep header button working
+  const [copiedKey, setCopiedKey] = React.useState('');
 
   const copyLink = () => {
-    navigator.clipboard.writeText(surveyUrl);
+    navigator.clipboard.writeText(webUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyChannel = (url, key) => {
+    navigator.clipboard.writeText(url);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(''), 2000);
   };
 
   if (loading) return (
@@ -102,23 +111,79 @@ export default function SurveyInsights() {
 
       {error && <div className="alert alert-error">{error}</div>}
 
-      {/* Share panel */}
-      <div className="card" style={{ marginBottom: 24, background: 'rgba(79,110,247,0.06)', borderColor: 'rgba(79,110,247,0.2)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 20 }}>🔗</span>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Survey Collection Link</div>
-            <div style={{ fontSize: 12, color: 'var(--text3)', fontFamily: 'monospace', background: 'var(--bg3)', padding: '6px 10px', borderRadius: 6 }}>
-              {surveyUrl}
+      {/* ── Multi-Channel Share Panel ── */}
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16, fontFamily: 'Syne' }}>
+          📡 Share Your Survey — Choose a Channel
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+
+          {/* Web Form */}
+          <div style={{ background: 'rgba(79,110,247,0.07)', border: '1px solid rgba(79,110,247,0.2)', borderRadius: 12, padding: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>🌐</span>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 13 }}>Web Chat</div>
+                <div style={{ fontSize: 11, color: 'var(--text3)' }}>Dark AI interface</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'monospace', background: 'var(--bg)', padding: '5px 8px', borderRadius: 6, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {webUrl}
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <button className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center', fontSize: 12, padding: '7px 10px' }}
+                onClick={() => copyChannel(webUrl, 'web')}>
+                {copiedKey === 'web' ? '✓ Copied' : '📋 Copy'}
+              </button>
+              <a href={webUrl} target="_blank" rel="noreferrer"
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, padding: '7px 10px', borderRadius: 10, background: 'var(--bg3)', border: '1px solid var(--border)', color: 'var(--text2)', textDecoration: 'none' }}>
+                🔗 Open
+              </a>
             </div>
           </div>
-          <button className="btn btn-primary" onClick={copyLink} style={{ flexShrink: 0 }}>
-            {copied ? '✓ Copied' : 'Copy'}
-          </button>
+
+          {/* WhatsApp Style */}
+          <div style={{ background: 'rgba(0,168,132,0.07)', border: '1px solid rgba(0,168,132,0.25)', borderRadius: 12, padding: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>💬</span>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 13 }}>WhatsApp Style</div>
+                <div style={{ fontSize: 11, color: 'var(--text3)' }}>Simulated WA chat</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'monospace', background: 'var(--bg)', padding: '5px 8px', borderRadius: 6, marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {whatsappUrl}
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <button className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center', fontSize: 12, padding: '7px 10px' }}
+                onClick={() => copyChannel(whatsappUrl, 'whatsapp')}>
+                {copiedKey === 'whatsapp' ? '✓ Copied' : '📋 Copy'}
+              </button>
+              <a href={whatsappUrl} target="_blank" rel="noreferrer"
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, padding: '7px 10px', borderRadius: 10, background: 'rgba(0,168,132,0.15)', border: '1px solid rgba(0,168,132,0.3)', color: '#00a884', textDecoration: 'none' }}>
+                🔗 Open
+              </a>
+            </div>
+          </div>
+
+          {/* Web Form (classic) */}
+          <div style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.2)', borderRadius: 12, padding: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>📋</span>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 13 }}>Web Form</div>
+                <div style={{ fontSize: 11, color: 'var(--text3)' }}>Same as Web Chat</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text3)', background: 'var(--bg)', padding: '5px 8px', borderRadius: 6, marginBottom: 10 }}>
+              Share either link — both collect responses in the same survey.
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.5 }}>
+              💡 <strong>Tip:</strong> Share the WhatsApp link with mobile users — it feels most familiar to them.
+            </div>
+          </div>
+
         </div>
-        <p style={{ fontSize: 12, color: 'var(--text3)', marginTop: 10 }}>
-          Share this link with your target audience. Each person will have a conversational AI-powered interview.
-        </p>
       </div>
 
       {/* Stats row */}
